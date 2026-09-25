@@ -1,0 +1,28 @@
+name: 月嫂任务提醒
+
+on:
+  schedule:
+    # 每5分钟运行一次（GitHub Actions 最小间隔为5分钟）
+    - cron: '*/5 * * * *'
+  workflow_dispatch:  # 允许手动触发测试
+
+jobs:
+  check-reminders:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+      
+      - name: 设置 Python 环境
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'[reference:1]
+      
+      - name: 安装依赖
+        run: pip install requests
+      
+      - name: 运行任务检查脚本
+        env:
+          PUSHPLUS_TOKEN: ${{ secrets.PUSHPLUS_TOKEN }}
+        run: python check_tasks.py
